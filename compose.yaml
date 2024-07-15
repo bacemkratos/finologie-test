@@ -2,8 +2,21 @@ services:
   postgres:
     image: 'postgres:latest'
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      PGDATA: /data/postgres
+      POSTGRES_DB: webbankingdb
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_USER: dbuser
     ports:
-      - '5432'
+      - '5432:5432'
+
+  webanking-api:
+    build: .
+    container_name: webanking-api
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/webbankingdb
+      SPRING_DATASOURCE_USERNAME: dbuser
+      SPRING_DATASOURCE_PASSWORD: pwd
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres

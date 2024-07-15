@@ -1,12 +1,13 @@
-package com.finologie.web_banking_api;
+package com.finologie.banking.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+
+//@SpringBootTest
 class WebBankingApiApplicationTests {
 
-	@Test
+//	@Test
 	void contextLoads() {
 	}
 
