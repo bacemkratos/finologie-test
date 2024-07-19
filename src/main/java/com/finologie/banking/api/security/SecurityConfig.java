@@ -30,7 +30,7 @@ public class SecurityConfig {
             "swagger-resources/**",
             "swagger-resources",
             "/auth/**"
-    } ;
+    };
     private final AppUserRepository userRepository;
     private final JWTAuthFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
@@ -86,14 +86,14 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         //for the moment we will allow every host and every http method
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration("/**",configuration);
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }

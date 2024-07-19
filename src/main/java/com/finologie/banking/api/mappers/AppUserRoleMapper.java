@@ -14,7 +14,7 @@ public interface AppUserRoleMapper {
 
     AppUserRole toEntity(AppUserRoleDto dto);
 
-    Set<AppUserRole>  toEntitySet(Set<AppUserRole> employees);
+    Set<AppUserRole> toEntitySet(Set<AppUserRole> employees);
 
     Set<AppUserRoleDto> toDtoSet(Set<AppUserRole> employees);
 }

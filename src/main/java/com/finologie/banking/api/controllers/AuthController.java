@@ -1,46 +1,46 @@
 package com.finologie.banking.api.controllers;
 
-import com.finologie.banking.api.dtos.AppUserMinDto;
-import com.finologie.banking.api.dtos.LoginResponse;
-import com.finologie.banking.api.dtos.LoginUserDto;
-import com.finologie.banking.api.dtos.RegisterUserDto;
+import com.finologie.banking.api.dtos.*;
 import com.finologie.banking.api.entites.AppUser;
 import com.finologie.banking.api.exception.WebBankingApiException;
+import com.finologie.banking.api.exception.WebBankingApiFraudException;
 import com.finologie.banking.api.mappers.AppUserMapper;
 import com.finologie.banking.api.security.JWTService;
-import com.finologie.banking.api.services.AuthenticationService;
+import com.finologie.banking.api.services.AuthAndUserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@Tag(name ="Authentication",description = "Authentication apis")
 @RequestMapping("/auth")
 @RestController
 public class AuthController {
     private final JWTService jwtService;
 
-    private final AuthenticationService authenticationService;
+    private final AuthAndUserService authAndUserService;
 
     private final AppUserMapper appUserMapper;
 
-    public AuthController(JWTService jwtService, AuthenticationService authenticationService, AppUserMapper appUserMapper) {
+    public AuthController(JWTService jwtService, AuthAndUserService authAndUserService, AppUserMapper appUserMapper) {
         this.jwtService = jwtService;
-        this.authenticationService = authenticationService;
+        this.authAndUserService = authAndUserService;
         this.appUserMapper = appUserMapper;
     }
 
     @PostMapping("/signup")
     public ResponseEntity<AppUserMinDto> register(@RequestBody RegisterUserDto registerUserDto) throws WebBankingApiException {
-        AppUser registeredUser = authenticationService.signup(registerUserDto);
+        AppUser registeredUser = authAndUserService.signup(registerUserDto);
 
         return ResponseEntity.ok(appUserMapper.toMinDto(registeredUser));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
-        AppUser authenticatedUser = authenticationService.authenticate(loginUserDto);
-
+    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) throws WebBankingApiException {
+        AppUser authenticatedUser = authAndUserService.authenticate(loginUserDto);
+        if(!authenticatedUser.isAccountNonLocked()){
+            authAndUserService.logout();
+            throw new WebBankingApiFraudException("Account is locked, please contact your bank consultant");
+        }
         String jwtToken = jwtService.generateToken(authenticatedUser);
 
         LoginResponse loginResponse = new LoginResponse();
@@ -50,4 +50,14 @@ public class AuthController {
 
         return ResponseEntity.ok(loginResponse);
     }
+
+    @GetMapping("/logout")
+    public ResponseEntity<Boolean> logout() throws WebBankingApiException {
+
+
+        return ResponseEntity.ok(authAndUserService.logout());
+    }
+
+
+
 }

@@ -3,21 +3,25 @@ package com.finologie.banking.api.entites;
 import com.finologie.banking.api.enums.Currency;
 import com.finologie.banking.api.enums.TransactionType;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 
 import java.time.LocalDateTime;
 
 @Table(name = "transaction")
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BankTransaction {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     private Double amount;
@@ -41,13 +45,16 @@ public class BankTransaction {
 
     @ManyToOne
     @JoinColumn(name = "operation_id")
-    private  Payment payment;
+    private Payment payment;
+
+
+    private boolean external;
+
+    private String externalIban;
+
 
     //audit attributes
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @CreationTimestamp
-    private LocalDateTime creationDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp

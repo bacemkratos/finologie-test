@@ -1,33 +1,39 @@
 package com.finologie.banking.api.entites;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Table(name = "role")
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class AppUserRole implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(length = 20, unique = true,updatable = false)
-    private  String alias;
+    @Column(length = 20, unique = true, updatable = false)
+    private String alias;
 
     private String description;
 
     @ManyToMany(mappedBy = "roles")
-    private Set<AppUser> users;
+    private Set<AppUser> users = new HashSet<>();
 
     @Override
     public String getAuthority() {
-        return "ROLE_"+alias;
+        return "ROLE_" + alias;
     }
 
     //audit attributes

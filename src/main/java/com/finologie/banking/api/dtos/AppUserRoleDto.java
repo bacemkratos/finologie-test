@@ -7,7 +7,7 @@ import lombok.Data;
 public class AppUserRoleDto {
 
 
-    private  String alias;
+    private String alias;
 
     private String description;
 

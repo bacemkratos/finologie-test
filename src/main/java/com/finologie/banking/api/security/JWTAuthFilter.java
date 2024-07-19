@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 @Component
 public class JWTAuthFilter extends OncePerRequestFilter {
@@ -27,7 +28,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
 
     public JWTAuthFilter(
             JWTService jwtService,
-            @Qualifier("customUserDetails")   UserDetailsService userDetailsService,
+            @Qualifier("customUserDetails") UserDetailsService userDetailsService,
             HandlerExceptionResolver handlerExceptionResolver
     ) {
         this.jwtService = jwtService;
@@ -63,8 +64,10 @@ public class JWTAuthFilter extends OncePerRequestFilter {
                             null,
                             userDetails.getAuthorities()
                     );
-
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    HashMap<String, Object> details = new HashMap<>();
+                    details.put("details", new WebAuthenticationDetailsSource().buildDetails(request));
+                    details.put("token", jwt);
+                    authToken.setDetails(details);
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
