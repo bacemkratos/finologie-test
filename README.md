@@ -43,6 +43,10 @@ The following users are pre-populated in the database:
 | Jack | jack     | 123456   |
 | Paul | paul     | 123456   |
 
+![img.png](img.png)
+
+login, get your token and authorize it, and go !
+
 Additional Information
 The application uses a PostgreSQL database initialized with a script located in the sql directory.
 Ensure all environment variables are correctly set in the docker-compose.yml file.
