@@ -47,4 +47,6 @@ Additional Information
 The application uses a PostgreSQL database initialized with a script located in the sql directory.
 Ensure all environment variables are correctly set in the docker-compose.yml file.
 
+## Remarks
 
+In this code, I tried to show some of the knowledge in Spring and Java language that I acquired over the last few years. For the tests, I have written some examples for unit testing and integration testing.
