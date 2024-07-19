@@ -8,8 +8,8 @@ import java.security.SecureRandom;
 public class IbanUtil {
 
 
-    private static final SecureRandom random = new SecureRandom();
     public static final String BANK_CODE = "456";
+    private static final SecureRandom random = new SecureRandom();
 
     public static String generateLuxembourgIban() {
         String countryCode = "LU";

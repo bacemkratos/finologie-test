@@ -26,18 +26,18 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 
     @Override
     public void processTransaction(BankTransaction bankTransaction) throws WebBankingApiException {
-         if(!bankTransaction.isExternal())
-             bankAccountService.updateBankBalance(bankTransaction);
+        if (!bankTransaction.isExternal())
+            bankAccountService.updateBankBalance(bankTransaction);
 
 
     }
 
     @Override
     public BankTransaction createPaymentTransaction(Payment payment, BankAccount bankAccount, TransactionType transactionType, boolean external) throws WebBankingApiException {
-        BankTransaction giverTransaction  = new BankTransaction();
+        BankTransaction giverTransaction = new BankTransaction();
         giverTransaction.setPayment(payment);
         giverTransaction.setDescription(payment.getCommunication());
-        giverTransaction.setAmount(   currencyConversionService.convertCurrency(payment.getCurrency().toString(),
+        giverTransaction.setAmount(currencyConversionService.convertCurrency(payment.getCurrency().toString(),
                 bankAccount.getCurrency().toString(),
                 payment.getAmount()));
         giverTransaction.setCurrency(bankAccount.getCurrency());
@@ -49,15 +49,15 @@ public class BankTransactionServiceImpl implements BankTransactionService {
 
     @Override
     public BankTransaction createInnerPaymentTransaction(Payment payment, BankAccount account, TransactionType transactionType) throws WebBankingApiException {
-        return createPaymentTransaction(payment,account,transactionType,false);
+        return createPaymentTransaction(payment, account, transactionType, false);
     }
 
     @Override
     public BankTransaction createExternalPaymentTransaction(Payment payment, String bankAccount, TransactionType transactionType) {
-        BankTransaction giverTransaction  = new BankTransaction();
+        BankTransaction giverTransaction = new BankTransaction();
         giverTransaction.setPayment(payment);
         giverTransaction.setDescription(payment.getCommunication());
-        giverTransaction.setAmount(  payment.getAmount());
+        giverTransaction.setAmount(payment.getAmount());
         giverTransaction.setCurrency(payment.getCurrency());
         giverTransaction.setBankAccount(null);
         giverTransaction.setType(transactionType);

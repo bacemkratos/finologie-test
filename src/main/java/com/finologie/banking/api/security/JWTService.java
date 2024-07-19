@@ -18,13 +18,11 @@ import java.util.function.Function;
 
 @Service
 public class JWTService {
+    private final BlackListedTokens blackListedTokens;
     @Value("${security.jwt.secret-key}")
     private String secretKey;
-
     @Value("${security.jwt.expiration-time}")
     private long jwtExpiration;
-
-    private final BlackListedTokens blackListedTokens;
 
     public JWTService(BlackListedTokens blackListedTokens) {
         this.blackListedTokens = blackListedTokens;

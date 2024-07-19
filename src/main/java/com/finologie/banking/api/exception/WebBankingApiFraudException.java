@@ -3,9 +3,9 @@ package com.finologie.banking.api.exception;
 import lombok.Getter;
 
 @Getter
-public class WebBankingApiFraudException extends  WebBankingApiException {
+public class WebBankingApiFraudException extends WebBankingApiException {
 
-    private  String details;
+    private String details;
 
     public WebBankingApiFraudException(String message, String details, Throwable cause) {
 

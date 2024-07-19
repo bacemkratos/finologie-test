@@ -30,20 +30,18 @@ public class AppUserRole implements GrantedAuthority {
 
     @ManyToMany(mappedBy = "roles")
     private Set<AppUser> users = new HashSet<>();
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    private LocalDateTime creationDate;
+
+    //audit attributes
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
+    private LocalDateTime updateDate;
 
     @Override
     public String getAuthority() {
         return "ROLE_" + alias;
     }
-
-    //audit attributes
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @CreationTimestamp
-    private LocalDateTime creationDate;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @UpdateTimestamp
-    private LocalDateTime updateDate;
 
 }

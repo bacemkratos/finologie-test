@@ -12,7 +12,7 @@ public interface BankAccountService {
 
     BankAccount openAccount(BankAccount entity) throws WebBankingApiException;
 
-    Optional<BankAccount> findByIbanNumber(String ibanNumber) ;
+    Optional<BankAccount> findByIbanNumber(String ibanNumber);
 
     void updateBankBalance(BankTransaction savedBankTransaction) throws WebBankingApiException;
 

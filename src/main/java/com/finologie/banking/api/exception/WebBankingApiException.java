@@ -3,11 +3,11 @@ package com.finologie.banking.api.exception;
 import lombok.Getter;
 
 @Getter
-public class WebBankingApiException extends  Exception {
+public class WebBankingApiException extends Exception {
 
-    private  String details;
+    private String details;
 
-    public WebBankingApiException(String message,String details, Throwable cause) {
+    public WebBankingApiException(String message, String details, Throwable cause) {
 
         super(message, cause);
         this.details = details;

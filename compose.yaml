@@ -8,7 +8,8 @@ services:
       POSTGRES_USER: dbuser
     ports:
       - '5432:5432'
-
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
   webanking-api:
     build: .
     container_name: webanking-api
@@ -16,6 +17,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/webbankingdb
       SPRING_DATASOURCE_USERNAME: dbuser
       SPRING_DATASOURCE_PASSWORD: pwd
+      JWT_KEY: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
+      JWT_EXPIRATION_TIME: 3600000
+      MAX_FRAUD_TENTATIVE: 5
     ports:
       - "8080:8080"
     depends_on:

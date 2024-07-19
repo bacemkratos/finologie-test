@@ -53,11 +53,13 @@ class AuthAndUserServiceImplTest {
     @Mock
     private AuthenticationManager authenticationManager;
 
-    @InjectMocks
     private AuthAndUserServiceImpl authAndUserService;
 
     @BeforeEach
     void setUp() {
+
+        authAndUserService = new AuthAndUserServiceImpl(userRepository,blackListedTokens,roleRepository,authenticationManager,
+                passwordEncoder,5);
 
     }
 

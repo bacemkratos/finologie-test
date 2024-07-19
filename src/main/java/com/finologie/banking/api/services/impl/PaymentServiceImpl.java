@@ -14,7 +14,6 @@ import com.finologie.banking.api.services.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,9 +63,9 @@ public class PaymentServiceImpl implements PaymentService {
         AppUser connectedUser = authAndUserService.getConnectedUser();
         try {
             validatePayment(payment, connectedUser);
-        }catch (WebBankingApiFraudException e){
+        } catch (WebBankingApiFraudException e) {
             authAndUserService.alertForFraudAttempt();
-            throw  e;
+            throw e;
         }
 
         //everything is fine, lets create our payment
@@ -85,7 +84,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public void processPayment(Payment payment) throws WebBankingApiException {
-         payment = paymentRepository.findById(payment.getId()).get();
+        payment = paymentRepository.findById(payment.getId()).get();
         Optional<BankAccount> beneficiaryAccount = bankAccountService.findByIbanNumber(payment.getBeneficiaryAccountNumber());
         //create giver transaction
         BankTransaction giverTransaction = bankTransactionService.createInnerPaymentTransaction(payment, payment.getGiverAccount(), TransactionType.DEBIT);
@@ -108,8 +107,7 @@ public class PaymentServiceImpl implements PaymentService {
         AppUser user = this.authAndUserService.getConnectedUser();
         Set<String> ibans = user.getBankAccounts().stream().map(BankAccount::getIbanNumber).collect(Collectors.toSet());
 
-            return   paymentRepository.finPaymentsByIbanList(ibans);
-
+        return paymentRepository.finPaymentsByIbanList(ibans);
 
 
     }
@@ -120,8 +118,7 @@ public class PaymentServiceImpl implements PaymentService {
         Set<String> ibans = user.getBankAccounts().stream().map(BankAccount::getIbanNumber).collect(Collectors.toSet());
 
 
-
-        return   paymentRepository.finPaymentsByIbanList(ibans, PageRequest.of(pages.getPageNumber(), pages.getSize()));
+        return paymentRepository.finPaymentsByIbanList(ibans, PageRequest.of(pages.getPageNumber(), pages.getSize()));
     }
 
     @Override
@@ -139,15 +136,16 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<Payment> getAllNonExecutedPayment() {
-        return  paymentRepository.findAllByExcutionStatusFalse();
+        return paymentRepository.findAllByExcutionStatusFalse();
     }
 
     @Override
     public Boolean delete(Long paymentId) throws WebBankingApiException {
         AppUser user = authAndUserService.getConnectedUser();
-        Optional<Payment> payment = this.paymentRepository.findByIdAndUserId(paymentId,user.getId());
-        if(payment.isEmpty()) throw  new  WebBankingApiException(" payment not found");
-        if(payment.get().isExcutionStatus()) throw  new  WebBankingApiException(" payment already executed, cannot delete payment");
+        Optional<Payment> payment = this.paymentRepository.findByIdAndUserId(paymentId, user.getId());
+        if (payment.isEmpty()) throw new WebBankingApiException(" payment not found");
+        if (payment.get().isExcutionStatus())
+            throw new WebBankingApiException(" payment already executed, cannot delete payment");
 
         paymentRepository.delete(payment.get());
 

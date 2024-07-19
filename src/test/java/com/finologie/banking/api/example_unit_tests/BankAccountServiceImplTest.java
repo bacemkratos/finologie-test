@@ -41,15 +41,17 @@ class BankAccountServiceImplTest {
     @Mock
     private BalanceRepository balanceRepository;
 
-    @InjectMocks
     private BankAccountServiceImpl bankAccountService;
 
     private AppUser mockUser;
+
     private BankAccount mockBankAccount;
 
     @BeforeEach
     void setUp() {
 
+        bankAccountService = new BankAccountServiceImpl(bankAccountRepository,authAndUserService,
+                currencyConversionService,appUserRepository,balanceRepository);
 
         mockUser = new AppUser();
         mockUser.setUsername("testuser");

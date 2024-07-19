@@ -7,6 +7,7 @@ import com.finologie.banking.api.entites.AppUser;
 import com.finologie.banking.api.exception.WebBankingApiException;
 import com.finologie.banking.api.mappers.AppUserMapper;
 import com.finologie.banking.api.services.AuthAndUserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name ="Profile",description = "Manage profile")
+@Tag(name = "Profile", description = "Manage profile")
 @RequestMapping("/api/profile")
 @RestController
 public class ProfileController {
@@ -29,6 +30,7 @@ public class ProfileController {
         this.appUserMapper = appUserMapper;
     }
 
+    @Operation(description = "update profile")
     @PostMapping("/update")
     public ResponseEntity<AppUserMinDto> register(@RequestBody UpdateUserInfoDto registerUserDto) throws WebBankingApiException {
         AppUser registeredUser = authAndUserService.updateConnectedUserInfo(registerUserDto);

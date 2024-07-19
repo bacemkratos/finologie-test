@@ -25,7 +25,6 @@ public class OpenAPISecurityConfig {
                                 .email("bacem.aouyen@gmail.com")));
     }
 
-
     private SecurityScheme createAPIKeyScheme() {
         return new SecurityScheme().type(SecurityScheme.Type.HTTP)
                 .bearerFormat("JWT")

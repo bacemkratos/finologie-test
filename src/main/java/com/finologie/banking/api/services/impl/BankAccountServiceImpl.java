@@ -27,7 +27,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     private final BankAccountRepository bankAccountRepository;
 
-    private  final CurrencyConversionService currencyConversionService;
+    private final CurrencyConversionService currencyConversionService;
 
     private final AuthAndUserService authAndUserService;
 
@@ -36,8 +36,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     private final BalanceRepository balanceRepository;
 
 
-
-    public BankAccountServiceImpl(BankAccountRepository bankAccountRepository, AuthAndUserService authAndUserService, EntityManager entityManager, CurrencyConversionService currencyConversionService, AppUserRepository appUserRepository, BalanceRepository balanceRepository) {
+    public BankAccountServiceImpl(BankAccountRepository bankAccountRepository, AuthAndUserService authAndUserService,  CurrencyConversionService currencyConversionService, AppUserRepository appUserRepository, BalanceRepository balanceRepository) {
         this.bankAccountRepository = bankAccountRepository;
         this.authAndUserService = authAndUserService;
         this.currencyConversionService = currencyConversionService;
@@ -50,28 +49,28 @@ public class BankAccountServiceImpl implements BankAccountService {
     public BankAccount openAccount(BankAccount entity) throws WebBankingApiException {
 
         //get connected user
-         AppUser user =  authAndUserService.getConnectedUser();
+        AppUser user = authAndUserService.getConnectedUser();
 
-         //init bank account properties
-         entity.setStatus(BankAccountStatus.ACTIVE);
-         entity.setBalanceAmount(0d);
-         entity.setIbanNumber(IbanUtil.generateLuxembourgIban());
-         entity.getUsers().add(user);
-         BankAccount newAccount = bankAccountRepository.save(entity);
+        //init bank account properties
+        entity.setStatus(BankAccountStatus.ACTIVE);
+        entity.setBalanceAmount(0d);
+        entity.setIbanNumber(IbanUtil.generateLuxembourgIban());
+        entity.getUsers().add(user);
+        BankAccount newAccount = bankAccountRepository.save(entity);
 
-         // create intialisation balance
-           this.snapshotBalance(newAccount);
+        // create intialisation balance
+        this.snapshotBalance(newAccount);
 
         // attach bank account to user
-         user.getBankAccounts().add(newAccount);
-          appUserRepository.save(user);
+        user.getBankAccounts().add(newAccount);
+        appUserRepository.save(user);
 
-        return   newAccount ;
+        return newAccount;
     }
 
     @Override
     public Optional<BankAccount> findByIbanNumber(String ibanNumber) {
-        return  bankAccountRepository.findByIbanNumber(ibanNumber);
+        return bankAccountRepository.findByIbanNumber(ibanNumber);
 
 
     }
@@ -90,13 +89,13 @@ public class BankAccountServiceImpl implements BankAccountService {
             case INTEREST -> {
             }
             case DEBIT -> {
-                updateBankBalance(relatedBankAccount,savedBankTransaction.getAmount(), BalanceOperation.SUB);
+                updateBankBalance(relatedBankAccount, savedBankTransaction.getAmount(), BalanceOperation.SUB);
             }
             case CREDIT -> {
-                updateBankBalance(relatedBankAccount,savedBankTransaction.getAmount(), BalanceOperation.ADD);
+                updateBankBalance(relatedBankAccount, savedBankTransaction.getAmount(), BalanceOperation.ADD);
             }
             default -> {
-                throw  new WebBankingApiException("Unknown transaction type %s".formatted(savedBankTransaction.getType()));
+                throw new WebBankingApiException("Unknown transaction type %s".formatted(savedBankTransaction.getType()));
             }
         }
     }
@@ -105,29 +104,30 @@ public class BankAccountServiceImpl implements BankAccountService {
     public Boolean depositMoney(String bankAccountIban, MoneyDepositDto moneyDepositDto) throws WebBankingApiException {
         AppUser user = authAndUserService.getConnectedUser();
         Optional<BankAccount> bankAccount = user.getBankAccounts().stream().filter(ab -> ab.getIbanNumber().equals(bankAccountIban)).findFirst();
-        if (bankAccount.isEmpty())  throw new WebBankingApiException("Account "+ bankAccountIban +" is not found in accounts list");
+        if (bankAccount.isEmpty())
+            throw new WebBankingApiException("Account " + bankAccountIban + " is not found in accounts list");
         bankAccount.get().setBalanceAmount(
                 currencyConversionService.convertCurrency(moneyDepositDto.getCurrency().toString()
-                        ,bankAccount.get().getCurrency().toString(),
+                        , bankAccount.get().getCurrency().toString(),
                         moneyDepositDto.getAmount())
         );
-        this.snapshotBalance( bankAccountRepository.save(bankAccount.get()));
+        this.snapshotBalance(bankAccountRepository.save(bankAccount.get()));
         return true;
     }
 
     @Override
     public Set<BankAccount> getConnectedUserBankAccounts() throws WebBankingApiException {
         AppUser user = authAndUserService.getConnectedUser();
-        return   user.getBankAccounts();
+        return user.getBankAccounts();
     }
 
     private void updateBankBalance(BankAccount relatedBankAccount, Double amount, BalanceOperation balanceOperation) {
         switch (balanceOperation) {
             case ADD -> {
-                relatedBankAccount.setBalanceAmount(relatedBankAccount.getBalanceAmount()+amount);
+                relatedBankAccount.setBalanceAmount(relatedBankAccount.getBalanceAmount() + amount);
             }
             case SUB -> {
-                relatedBankAccount.setBalanceAmount(relatedBankAccount.getBalanceAmount()-amount);
+                relatedBankAccount.setBalanceAmount(relatedBankAccount.getBalanceAmount() - amount);
             }
         }
         this.snapshotBalance(relatedBankAccount);

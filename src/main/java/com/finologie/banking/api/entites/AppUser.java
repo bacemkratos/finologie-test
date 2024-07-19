@@ -65,6 +65,12 @@ public class AppUser implements UserDetails {
 
     @Column(name = "enabled")
     private Boolean isEnabled;
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    private LocalDateTime creationDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
+    private LocalDateTime updateDate;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -82,6 +88,9 @@ public class AppUser implements UserDetails {
         return this.isAccountNonLocked;
     }
 
+
+    //audit attributes
+
     @Override
     public boolean isCredentialsNonExpired() {
         // get along if we implement user expiration mechanism
@@ -93,17 +102,6 @@ public class AppUser implements UserDetails {
     public boolean isEnabled() {
         return this.isEnabled;
     }
-
-
-    //audit attributes
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @CreationTimestamp
-    private LocalDateTime creationDate;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @UpdateTimestamp
-    private LocalDateTime updateDate;
 
 
 }

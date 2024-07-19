@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name ="Payments",description = "Manage payments")
+@Tag(name = "Payments", description = "Manage payments")
 @RequestMapping("/api/payment")
 @RestController
 public class PaymentController {
 
-private final PaymentMapper paymentMapper;
-private final PaymentService paymentService;
+    private final PaymentMapper paymentMapper;
+    private final PaymentService paymentService;
 
     public PaymentController(PaymentMapper paymentMapper, PaymentService paymentService) {
         this.paymentMapper = paymentMapper;
@@ -30,7 +30,7 @@ private final PaymentService paymentService;
     @PostMapping("")
     @Operation(summary = "Create Payment")
     public ResponseEntity<PaymentMinDto> register(@RequestBody PaymentCreationDto paymentCreationDto) throws WebBankingApiException {
-        return   ResponseEntity.ok(
+        return ResponseEntity.ok(
                 this.paymentMapper.toMinDto(
                         this.paymentService.createPayment(
                                 this.paymentMapper.toEntity(paymentCreationDto))
@@ -40,8 +40,8 @@ private final PaymentService paymentService;
 
     @GetMapping("")
     @Operation(summary = "List of connected user Payments")
-    public ResponseEntity<List<PaymentMinDto>> getAllPayment( ) throws WebBankingApiException {
-        return   ResponseEntity.ok(
+    public ResponseEntity<List<PaymentMinDto>> getAllPayment() throws WebBankingApiException {
+        return ResponseEntity.ok(
                 this.paymentMapper.toMinDto(
                         this.paymentService.getConnectedUserPayments()
                 )
@@ -52,7 +52,7 @@ private final PaymentService paymentService;
     @Operation(summary = "List of connected user Payments paged ")
     public ResponseEntity<List<PaymentMinDto>> PagedPayment(@RequestBody ApiPageRequest pages) throws WebBankingApiException {
         // for some reason swagger does not detect that he payload is not required, to exploit the full potential api , try it with postman
-        return   ResponseEntity.ok(
+        return ResponseEntity.ok(
                 this.paymentMapper.toMinDto(
                         this.paymentService.getConnectedUserPayments(pages).getContent()
                 )
@@ -63,12 +63,12 @@ private final PaymentService paymentService;
     @GetMapping("/beneficiary/{iban}")
     @Operation(summary = "List of  Payments by beneficiary iban ")
     public ResponseEntity<List<PaymentMinDto>> getAllPaymentsByBeneficiary(@PathVariable(name = "iban") String beneficiaryIban,
-                                                                           @RequestParam("startDate")String startDate,
-                                                                           @RequestParam("enDate")String endDate
-                                                                           ) throws WebBankingApiException {
-        return   ResponseEntity.ok(
+                                                                           @RequestParam("startDate") String startDate,
+                                                                           @RequestParam("enDate") String endDate
+    ) throws WebBankingApiException {
+        return ResponseEntity.ok(
                 this.paymentMapper.toMinDto(
-                        this.paymentService.getPaymentsByBeneficiary(beneficiaryIban,startDate,endDate)
+                        this.paymentService.getPaymentsByBeneficiary(beneficiaryIban, startDate, endDate)
                 )
         );
     }
@@ -77,7 +77,7 @@ private final PaymentService paymentService;
     @DeleteMapping("/{paymentId}")
     @Operation(summary = "Delete non executed Payments")
     public ResponseEntity<Boolean> deletePayment(@PathVariable(name = "paymentId") Long paymentId) throws WebBankingApiException {
-        return   ResponseEntity.ok(
+        return ResponseEntity.ok(
                 this.paymentService.delete(paymentId)
         );
     }
