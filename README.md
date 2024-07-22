@@ -26,7 +26,6 @@ docker-compose up --build
 
 ### Step 3: Access the Application
 
-Ensure Docker is installed and running on your machine. Then, run the following command to start the services defined in the docker-compose.yml file:
 
 Once the Docker containers are up and running, you can access the application via the following URL:
 
@@ -41,7 +40,7 @@ The following users are pre-populated in the database:
 |------|----------|----------|
 | Joe  | joe      | 12345    |
 | Jack | jack     | 123456   |
-| Paul | paul     | 123456   |
+| Paul | paul     | 12345   |
 
 ![img.png](img.png)
 
